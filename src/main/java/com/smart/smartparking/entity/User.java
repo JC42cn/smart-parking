@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-public class User implements Serializable {
-
-    private static final long serialVersionUID=1L;
+//public class User implements Serializable {
+public class User {
+//    private static final long serialVersionUID=1L;
 
     private Integer id;
 
@@ -33,6 +33,8 @@ public class User implements Serializable {
     private Integer age;
 
     private String phone;
+
+    private String token;
 
     private String email;
 
