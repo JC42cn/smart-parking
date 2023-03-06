@@ -26,9 +26,8 @@ public class UserController {
     @ApiOperation(value = "用户登录接口")
     @GetMapping("/login")
     public User login(User user) {
-        log.info("登录验证")   ;
-    log.info("账号"+user.getUsername());
-
+        log.info("登录验证");
+        user.setName("user");
 
         if(USERNAME.equals(user.getUsername()) && PASSWORD.equals(user.getPassword())){
             log.info("登录成功");
