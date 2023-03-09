@@ -1,7 +1,10 @@
 package com.smart.smartparking.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.entity.Order;
+import com.smart.smartparking.entity.Record;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.smart.smartparking.entity.Order;
  */
 public interface IOrderService extends IService<Order> {
 
+     Order addOrder(int pid,int psid);
 }

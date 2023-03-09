@@ -6,7 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.smart.smartparking.common.R;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Car;
 import com.smart.smartparking.entity.Record;
@@ -43,61 +43,61 @@ public class RecordController {
     @AutoLog("新增停车记录")
     @PostMapping
     @SaCheckPermission("record.add")
-    public R save(@RequestBody Record record) {
+    public Result save(@RequestBody Record record) {
         recordService.save(record);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "编辑停车记录", notes = "编辑停车记录", response = Car.class)
     @AutoLog("编辑停车记录")
     @PutMapping
     @SaCheckPermission("record.edit")
-    public R update(@RequestBody Record record) {
+    public Result update(@RequestBody Record record) {
         recordService.updateById(record);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "删除停车记录", notes = "删除停车记录", response = Car.class)
     @AutoLog("删除停车记录")
     @DeleteMapping("/{id}")
     @SaCheckPermission("record.delete")
-    public R delete(@PathVariable Integer id) {
+    public Result delete(@PathVariable Integer id) {
         recordService.removeById(id);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "批量删除停车记录", notes = "批量删除停车记录", response = Car.class)
     @AutoLog("批量删除停车记录")
     @PostMapping("/del/batch")
     @SaCheckPermission("record.deleteBatch")
-    public R deleteBatch(@RequestBody List<Integer> ids) {
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
         recordService.removeByIds(ids);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "车辆记录列表", notes = "车辆记录列表", response = Car.class)
     @GetMapping
     @SaCheckPermission("record.list")
-    public R findAll() {
-        return R.success(recordService.list());
+    public Result findAll() {
+        return Result.success(recordService.list());
     }
 
     @ApiOperation(value = "车辆记录列表2", notes = "车辆记录列表2", response = Car.class)
     @GetMapping("/{id}")
     @SaCheckPermission("record.list")
-    public R findOne(@PathVariable Integer id) {
-        return R.success(recordService.getById(id));
+    public Result findOne(@PathVariable Integer id) {
+        return Result.success(recordService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Car.class)
     @GetMapping("/page")
     @SaCheckPermission("record.list")
-    public R findPage(@RequestParam(defaultValue = "") String name,
+    public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<Record>().orderByDesc("id");
         queryWrapper.like(!"".equals(name), "name", name);
-        return R.success(recordService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        return Result.success(recordService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     /**
@@ -135,14 +135,14 @@ public class RecordController {
     @ApiOperation(value = "导入", notes = "导入", response = Car.class)
     @PostMapping("/import")
     @SaCheckPermission("record.import")
-    public R imp(MultipartFile file) throws Exception {
+    public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
         List<Record> list = reader.readAll(Record.class);
 
         recordService.saveBatch(list);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
 }

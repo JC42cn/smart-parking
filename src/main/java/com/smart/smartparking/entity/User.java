@@ -10,13 +10,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
-//public class User implements Serializable {
-public class User {
-//    private static final long serialVersionUID=1L;
+public class User implements Serializable {
+    private static final long serialVersionUID=1L;
 
     private Integer id;
 
-    private Integer uid;
+    private String uid;
 
     private String username;
 
@@ -26,7 +25,11 @@ public class User {
 
     @TableField(fill = FieldFill.INSERT)//插入时填充字段
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     private LocalDateTime createTime;
+
+    @TableField(fill = FieldFill.INSERT_UPDATE) //插入和更新时填充字段
+    private LocalDateTime updateTime;
 
     private String sex;
 
@@ -39,5 +42,9 @@ public class User {
     private String email;
 
     private String name;
+
+    private String flag;
+
+    private Integer deleted;
 
 }

@@ -1,7 +1,10 @@
 package com.smart.smartparking.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.smart.smartparking.common.JwtUtil;
+import com.smart.smartparking.common.Result;
+import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.User;
 import com.smart.smartparking.service.UserService;
 import com.smart.smartparking.service.impl.UserServiceImpl;
@@ -14,36 +17,46 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Slf4j
-//@RequestMapping()
+@RequestMapping("/user")
 @RestController
 public class UserController {
 //    @Autowired
 //    private UserService userService;
 
-    private final String USERNAME = "admin";
-    private final String PASSWORD = "123123";
-    //登录
-    @ApiOperation(value = "用户登录接口")
-    @GetMapping("/login")
-    public User login(User user) {
-        log.info("登录验证");
-        user.setName("user");
+//    private final String USERNAME = "admin";
+//    private final String PASSWORD = "123123";
+//    //登录
+//    @ApiOperation(value = "用户登录接口")
+//    @GetMapping("/login")
+//    public User login(User user) {
+//        log.info("登录验证");
+//        user.setName("user");
+//
+//        if(USERNAME.equals(user.getUsername()) && PASSWORD.equals(user.getPassword())){
+//            log.info("登录成功");
+//            //添加token
+//            user.setToken(JwtUtil.createToken());
+//            log.info("............");
+//            return user;
+//        }
+//        return null;
+//
+//    }
+//    @GetMapping("/checkToken")
+//    public Boolean checkToken(HttpServletRequest request){
+//        String token = request.getHeader("token");
+//        log.info(token+"===");
+//        return JwtUtil.checkToken(token);
+//    }
+    private UserService userService;
 
-        if(USERNAME.equals(user.getUsername()) && PASSWORD.equals(user.getPassword())){
-            log.info("登录成功");
-            //添加token
-            user.setToken(JwtUtil.createToken());
-            log.info("............");
-            return user;
-        }
-        return null;
+    @AutoLog("新增用户")
+    @PostMapping
+    @SaCheckPermission("user.add")
+    public Result insertUser(@RequestBody User user){
+        userService.save(user);
+        return Result.success();
+    }
 
-    }
-    @GetMapping("/checkToken")
-    public Boolean checkToken(HttpServletRequest request){
-        String token = request.getHeader("token");
-        log.info(token+"===");
-        return JwtUtil.checkToken(token);
-    }
 
 }

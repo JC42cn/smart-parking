@@ -6,7 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.smart.smartparking.common.R;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.entity.ParkingSpace;
@@ -43,66 +43,66 @@ public class ParkingSpaceController {
     @AutoLog("新增停车位")
     @PostMapping
     @SaCheckPermission("parkingSpace.add")
-    public R save(@RequestBody ParkingSpace parkingSpace) {
+    public Result save(@RequestBody ParkingSpace parkingSpace) {
 //        User user = SessionUtils.getUser();
 //        parkingSpace.setUser(user.getName());
 //        parkingSpace.setUserid(user.getId());
 //        parkingSpace.setDate(DateUtil.today());
 //        parkingSpace.setTime(DateUtil.now());
         parkingSpaceService.save(parkingSpace);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "编辑停车位", notes = "编辑停车位", response = Order.class)
     @AutoLog("编辑停车位")
     @PutMapping
     @SaCheckPermission("parkingSpace.edit")
-    public R update(@RequestBody ParkingSpace parkingSpace) {
+    public Result update(@RequestBody ParkingSpace parkingSpace) {
         parkingSpaceService.updateById(parkingSpace);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "删除停车位", notes = "删除停车位", response = Order.class)
     @AutoLog("删除停车位")
     @DeleteMapping("/{id}")
     @SaCheckPermission("parkingSpace.delete")
-    public R delete(@PathVariable Integer id) {
+    public Result delete(@PathVariable Integer id) {
         parkingSpaceService.removeById(id);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "批量删除停车位", notes = "批量删除停车位", response = Order.class)
     @AutoLog("批量删除停车位")
     @PostMapping("/del/batch")
     @SaCheckPermission("parkingSpace.deleteBatch")
-    public R deleteBatch(@RequestBody List<Integer> ids) {
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
         parkingSpaceService.removeByIds(ids);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "停车位列表", notes = "停车位列表", response = Order.class)
     @GetMapping
     @SaCheckPermission("parkingSpace.list")
-    public R findAll() {
-        return R.success(parkingSpaceService.list());
+    public Result findAll() {
+        return Result.success(parkingSpaceService.list());
     }
 
     @ApiOperation(value = "停车位列表2", notes = "停车位列表2", response = Order.class)
     @GetMapping("/{id}")
     @SaCheckPermission("parkingSpace.list")
-    public R findOne(@PathVariable Integer id) {
-        return R.success(parkingSpaceService.getById(id));
+    public Result findOne(@PathVariable Integer id) {
+        return Result.success(parkingSpaceService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Order.class)
     @GetMapping("/page")
     @SaCheckPermission("parkingSpace.list")
-    public R findPage(@RequestParam(defaultValue = "") String name,
+    public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<ParkingSpace> queryWrapper = new QueryWrapper<ParkingSpace>().orderByDesc("id");
         queryWrapper.like(!"".equals(name), "name", name);
-        return R.success(parkingSpaceService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        return Result.success(parkingSpaceService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     /**
@@ -140,14 +140,14 @@ public class ParkingSpaceController {
     @ApiOperation(value = "导入", notes = "导入", response = Order.class)
     @PostMapping("/import")
     @SaCheckPermission("parkingSpace.import")
-    public R imp(MultipartFile file) throws Exception {
+    public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
         List<ParkingSpace> list = reader.readAll(ParkingSpace.class);
 
         parkingSpaceService.saveBatch(list);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
 }

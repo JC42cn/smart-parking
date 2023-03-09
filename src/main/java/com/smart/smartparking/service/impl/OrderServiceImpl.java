@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
 
+    @Override
+    public Order addOrder(int pid, int psid) {
+        return null;
+    }
 }

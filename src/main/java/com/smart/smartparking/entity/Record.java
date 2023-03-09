@@ -36,9 +36,9 @@ private static final long serialVersionUID = 1L;
     private Integer rid;
 
     // 车辆名称
-    @ApiModelProperty("车辆名称")
+    @ApiModelProperty("车牌号")
     @Alias("车辆名称")
-    private String carName;
+    private String carNumber;
 
     // 入库时间
     @ApiModelProperty("入库时间")
@@ -47,10 +47,12 @@ private static final long serialVersionUID = 1L;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime intoTime;
 
+
+
     // 出库时间
     @ApiModelProperty("出库时间")
     @Alias("出库时间")
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime outTime;
 
@@ -59,9 +61,18 @@ private static final long serialVersionUID = 1L;
     @Alias("停车费用")
     private BigDecimal money;
 
+    // 停车场id
+    @ApiModelProperty("停车场id")
+    @Alias("停车场id")
+    private Integer pid;
+
     // 逻辑删除 0存在  id删除
     @ApiModelProperty("逻辑删除 0存在  id删除")
     @Alias("逻辑删除 0存在  id删除")
     @TableLogic(value = "0", delval = "id")
     private Integer deleted;
+
+    @ApiModelProperty("逻辑完成 0未完成 1完成")
+    @Alias("逻辑完成 0未完成 1完成")
+    private Integer state;
 }

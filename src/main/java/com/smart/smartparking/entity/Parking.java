@@ -76,6 +76,8 @@ private static final long serialVersionUID = 1L;
     @Alias("计时单元")
     private Integer timeUnit;
 
+
+
     // 单元收费
     @ApiModelProperty("单元收费")
     @Alias("单元收费")

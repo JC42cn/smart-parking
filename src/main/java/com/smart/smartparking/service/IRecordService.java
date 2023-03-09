@@ -12,5 +12,5 @@ import com.smart.smartparking.entity.Record;
  * @since 2023-02-28
  */
 public interface IRecordService extends IService<Record> {
-
+    Record getByPlateNumber(String plateNumber,int pid);
 }

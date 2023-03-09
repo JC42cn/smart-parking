@@ -6,7 +6,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.smart.smartparking.common.R;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.entity.Parking;
@@ -43,61 +43,61 @@ public class ParkingController {
     @AutoLog("新增停车场")
     @PostMapping
     @SaCheckPermission("parking.add")
-    public R save(@RequestBody Parking parking) {
+    public Result save(@RequestBody Parking parking) {
         parkingService.save(parking);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "编辑停车场", notes = "编辑停车场", response = Order.class)
     @AutoLog("编辑停车场")
     @PutMapping
     @SaCheckPermission("parking.edit")
-    public R update(@RequestBody Parking parking) {
+    public Result update(@RequestBody Parking parking) {
         parkingService.updateById(parking);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "删除停车场", notes = "删除停车场", response = Order.class)
     @AutoLog("删除停车场")
     @DeleteMapping("/{id}")
     @SaCheckPermission("parking.delete")
-    public R delete(@PathVariable Integer id) {
+    public Result delete(@PathVariable Integer id) {
         parkingService.removeById(id);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "批量删除停车场", notes = "批量删除停车场", response = Order.class)
     @AutoLog("批量删除停车场")
     @PostMapping("/del/batch")
     @SaCheckPermission("parking.deleteBatch")
-    public R deleteBatch(@RequestBody List<Integer> ids) {
+    public Result deleteBatch(@RequestBody List<Integer> ids) {
         parkingService.removeByIds(ids);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
     @ApiOperation(value = "停车场列表", notes = "停车场列表", response = Order.class)
     @GetMapping
     @SaCheckPermission("parking.list")
-    public R findAll() {
-        return R.success(parkingService.list());
+    public Result findAll() {
+        return Result.success(parkingService.list());
     }
 
     @ApiOperation(value = "停车场列表2", notes = "停车场列表2", response = Order.class)
     @GetMapping("/{id}")
     @SaCheckPermission("parking.list")
-    public R findOne(@PathVariable Integer id) {
-        return R.success(parkingService.getById(id));
+    public Result findOne(@PathVariable Integer id) {
+        return Result.success(parkingService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Order.class)
     @GetMapping("/page")
     @SaCheckPermission("parking.list")
-    public R findPage(@RequestParam(defaultValue = "") String name,
+    public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Parking> queryWrapper = new QueryWrapper<Parking>().orderByDesc("id");
         queryWrapper.like(!"".equals(name), "name", name);
-        return R.success(parkingService.page(new Page<>(pageNum, pageSize), queryWrapper));
+        return Result.success(parkingService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
     /**
@@ -135,14 +135,14 @@ public class ParkingController {
     @ApiOperation(value = "导出", notes = "导出", response = Order.class)
     @PostMapping("/import")
     @SaCheckPermission("parking.import")
-    public R imp(MultipartFile file) throws Exception {
+    public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
         List<Parking> list = reader.readAll(Parking.class);
 
         parkingService.saveBatch(list);
-        return R.success("cg");
+        return Result.success("cg");
     }
 
 }

@@ -57,6 +57,11 @@ private static final long serialVersionUID = 1L;
     @Alias("车位id")
     private Integer psid;
 
+    // 停车场id
+    @ApiModelProperty("停车场id")
+    @Alias("停车场id")
+    private Integer pid;
+
     // 支付状态
     @ApiModelProperty("支付状态")
     @Alias("支付状态")

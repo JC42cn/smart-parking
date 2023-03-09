@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author  
  * @since 2023-02-28
  */
+
 @Mapper
 public interface RecordMapper extends BaseMapper<Record> {
 
