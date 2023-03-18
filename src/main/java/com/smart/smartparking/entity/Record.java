@@ -33,7 +33,7 @@ private static final long serialVersionUID = 1L;
     // 记录唯一id
     @ApiModelProperty("记录唯一id")
     @Alias("记录唯一id")
-    private Integer rid;
+    private long rid;
 
     // 车辆名称
     @ApiModelProperty("车牌号")

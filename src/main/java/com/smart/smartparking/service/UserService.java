@@ -21,4 +21,5 @@ public interface UserService extends IService<User> {
     void logout(String uid);
 
     void register(UserRequest user);
+
 }

@@ -13,4 +13,5 @@ import com.smart.smartparking.entity.Record;
  */
 public interface IRecordService extends IService<Record> {
     Record getByPlateNumber(String plateNumber,int pid);
+    Integer selectCount(int pid);
 }

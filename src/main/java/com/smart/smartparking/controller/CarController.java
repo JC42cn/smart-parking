@@ -97,7 +97,7 @@ public class CarController {
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Car> queryWrapper = new QueryWrapper<Car>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(name), "car_number", name);
         return Result.success(carService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 

@@ -13,4 +13,6 @@ import com.smart.smartparking.entity.Car;
  */
 public interface ICarService extends IService<Car> {
 
+    Car selectNumber(String carNumber);
+
 }

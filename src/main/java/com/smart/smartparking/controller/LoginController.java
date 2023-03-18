@@ -35,38 +35,25 @@ public class LoginController {
         if(user2!=null){
             log.info("登录成功");
             //添加token
-            user.setToken(JwtUtil.createToken());
-            log.info("............");
+            user2.setToken(JwtUtil.createToken());
+            log.info("登录成功 t添加token"+user.getToken());
             return  Result.success(user2);
         }
         return  Result.error("登录失败");
 
     }
+
+    @ApiOperation(value = "用户退出登录接口")
+    @GetMapping("/logout/{uid}")
+    public Result logout(@PathVariable String uid){
+        userService.logout(uid);
+        return Result.success();
+    }
+
     @GetMapping("/checkToken")
     public Boolean checkToken(HttpServletRequest request){
         String token = request.getHeader("token");
         log.info(token+"===");
         return JwtUtil.checkToken(token);
     }
-//    @GetMapping("/login")
-//    public String Login(@RequestBody UserVo uservo) {
-//        //创建一个条件构造器
-//        QueryWrapper<User> QueryWrapper = new QueryWrapper<>();
-//        //传入查询条件
-//        String username=uservo.getUsername();
-//        String password=uservo.getPassword();
-//        log.info(username);
-//        QueryWrapper.eq("username",username).eq("password", password);
-//        User user = userService.getOne(QueryWrapper);
-//        if (user != null) {
-//            String res = JwtUtils.sign(username, uservo.getUserId());
-//            System.out.println(res);
-//            return res;
-//        }
-//
-//        return "失败";
-//
-//    }
-
-
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Slf4j
 public class JwtUtil {
 
-    private static long time = 5*1000 ;
+    private static long time = 60*1000*30 ;//60*1000*30
     private static String secret = "q1w2^&*&*%";
 
     public static String createToken(){
@@ -39,6 +39,7 @@ public class JwtUtil {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);//解析token信息赋值给claimsJws
         } catch (Exception e) {
             log.info("解析异常");
+            log.info(e.toString());
             return false;
         }
         log.info("解析成功,token有效");

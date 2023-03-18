@@ -39,9 +39,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.ZoneOffset;
+import java.util.Random;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -55,8 +55,8 @@ public class DistinguishController {
     @Resource
     private BaiDuUtils baiDuUtils;
 
-//    @Autowired
-//    private ICarService carService;
+    @Autowired
+    private ICarService carService;
 
     @Resource
     private IRecordService recordService;
@@ -71,15 +71,17 @@ public class DistinguishController {
     @PostMapping("upload")
     @ApiOperation(value = "扫描车牌", notes = "扫描车牌")
     @AutoLog("文字识别")
-    //@SaCheckPermission("")
-    public Result upload(MultipartFile file,int id){
+    @SaCheckPermission("distinguish.upload")
+    public Result upload(MultipartFile file,String name){
         try {
             QueryWrapper<Parking> parkingQueryWrapper = new QueryWrapper<>();
+            Parking parking = new Parking();
+            parking = parkingService.select(name);
+            int id = parking.getId();
             if (file!=null) {
-                Parking parking = parkingService.getOne(parkingQueryWrapper.eq("pid",id));
-
-                if (parking==null||id==0){
-                    return Result.error("请选择停车场！");
+                parking = parkingService.getOne(parkingQueryWrapper.eq("pid",id));
+                if (parking==null){
+                    return Result.error("没找到该停车场");
 
                 }
                 File parentFile = CommonUtils.createParentFile(filePath);
@@ -105,13 +107,10 @@ public class DistinguishController {
                 if(StringUtils.isBlank(plateNumber)){
                     return Result.error("识别失败");
                 }
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("plateNumber",plateNumber);
-                map.put("imagePath",imagePath);
                 Record record =new Record();
 
-                if (recordService.getByPlateNumber(plateNumber,id)!=null){//出库 查到信息
+                if (recordService.getByPlateNumber(plateNumber,id)!=null){
+                    //出库 查到信息
                     record=recordService.getByPlateNumber(plateNumber,id);
                     record.setOutTime(LocalDateTime.now());
                     Duration duration = Duration.between(record.getIntoTime(),record.getOutTime());
@@ -123,7 +122,6 @@ public class DistinguishController {
                     //计算金额
                     if (hours>1){
                         if (minutes>0){
-                            //record.setMoney(BigDecimal.valueOf(hours));
                             moeny=BigDecimal.valueOf(hours);
                         }else {
                             moeny=BigDecimal.valueOf(hours-1);
@@ -137,22 +135,38 @@ public class DistinguishController {
 
                     }
                     record.setMoney(moeny);
+                    Order order = new Order();
+                    order.setMoney(moeny);
+
+                    //生成订单号
+                    long timestamp = System.currentTimeMillis();
+                    Random random = new Random();
+                    int randomNum = Math.abs(random.nextInt() % 1000000);
+                    order.setOid(timestamp+randomNum);
+                    order.setCarNumber(plateNumber);
+                    Car car = carService.selectNumber(plateNumber);
+                    order.setUid(car.getUid());
+                    order.setPid(id);
+                    record.setState(1);
                     //保存停车记录
                     recordService.updateById(record);
-                    //添加订单
-                    Order order = new Order();
-                    order.setMoeny(moeny);
-
+                    //生成订单
                     orderService.save(order);
 
-                    map.put("msg","出库成功");
-                    return Result.success("cg");
-                }else{//入库
+
+                if(moeny == BigDecimal.ZERO){
+                        return Result.success("出库成功");
+                    }
+                    return Result.success("识别成功，请支付");
+                }else{
+
+                    //入库
+                    long timestamp = System.currentTimeMillis();
+                    record.setRid(timestamp);
                     record.setPid(id);
                     record.setCarNumber(plateNumber);
                     recordService.save(record);
-                    map.put("msg","入库成功");
-                    log.info("入库");
+                    return Result.success("入库成功");
                 }
             }
         }catch (Exception ex){

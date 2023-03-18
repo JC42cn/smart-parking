@@ -33,4 +33,13 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
 
         return record;
     }
+
+    @Override
+    public Integer selectCount(int pid) {
+        QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("into_time").isNull("out_time").eq("pid",pid);
+        int count = count(queryWrapper);
+        return count;
+    }
+
 }

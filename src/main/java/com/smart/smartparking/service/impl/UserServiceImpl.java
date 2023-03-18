@@ -1,6 +1,7 @@
 package com.smart.smartparking.service.impl;
 
 import cn.dev33.satoken.secure.BCrypt;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
@@ -31,6 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 @Transactional
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
@@ -57,22 +59,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         if (dbUser == null) {
             throw new ServiceException("未找到用户");
         }
-//        String securePass = SaSecureUtil.aesEncrypt(Constants.LOGIN_USER_KEY, user.getPassword());
-//        if (!securePass.equals(dbUser.getPassword())) {
-//            throw new ServiceException("用户名或密码错误");
-//        }
-        // if (!BCrypt.checkpw(user.getPassword(), dbUser.getPassword()))
         if (!user.getPassword().equals( dbUser.getPassword()))
         {
             throw new RuntimeException("用户名或密码错误");
 
         }
-        // 登录
-        // StpUtil.login(dbUser.getUserId());  // loginId
-        //String tokenValue = StpUtil.getTokenInfo().getTokenValue();
-//        LoginDTO loginDTO = new LoginDTO(dbUser, tokenValue);
-
-        // 查询用户的菜单树（2层）
         String flag = dbUser.getFlag();
         List<Permission> all = getPermission(flag);  // 水平
         List<Permission> menus = getTreePermission(all); // 树
@@ -140,7 +131,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
     @Override
     public void logout(String uid) {
-
+        StpUtil.logout(uid);
+        log.info("用户{}退出成功",uid);
     }
 
     @Override

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 /**
 * <p>
@@ -39,7 +40,7 @@ public class ParkingController {
     @Resource
     private IParkingService parkingService;
 
-    @ApiOperation(value = "新增停车场", notes = "新增停车场", response = Order.class)
+    @ApiOperation(value = "新增停车场", notes = "新增停车场")
     @AutoLog("新增停车场")
     @PostMapping
     @SaCheckPermission("parking.add")
@@ -48,7 +49,7 @@ public class ParkingController {
         return Result.success("cg");
     }
 
-    @ApiOperation(value = "编辑停车场", notes = "编辑停车场", response = Order.class)
+    @ApiOperation(value = "编辑停车场", notes = "编辑停车场")
     @AutoLog("编辑停车场")
     @PutMapping
     @SaCheckPermission("parking.edit")
@@ -57,7 +58,7 @@ public class ParkingController {
         return Result.success("cg");
     }
 
-    @ApiOperation(value = "删除停车场", notes = "删除停车场", response = Order.class)
+    @ApiOperation(value = "删除停车场", notes = "删除停车场")
     @AutoLog("删除停车场")
     @DeleteMapping("/{id}")
     @SaCheckPermission("parking.delete")
@@ -66,7 +67,7 @@ public class ParkingController {
         return Result.success("cg");
     }
 
-    @ApiOperation(value = "批量删除停车场", notes = "批量删除停车场", response = Order.class)
+    @ApiOperation(value = "批量删除停车场", notes = "批量删除停车场")
     @AutoLog("批量删除停车场")
     @PostMapping("/del/batch")
     @SaCheckPermission("parking.deleteBatch")
@@ -75,21 +76,21 @@ public class ParkingController {
         return Result.success("cg");
     }
 
-    @ApiOperation(value = "停车场列表", notes = "停车场列表", response = Order.class)
-    @GetMapping
+    @ApiOperation(value = "停车场列表", notes = "停车场列表")
+    @GetMapping("/all")
     @SaCheckPermission("parking.list")
     public Result findAll() {
         return Result.success(parkingService.list());
     }
 
-    @ApiOperation(value = "停车场列表2", notes = "停车场列表2", response = Order.class)
+    @ApiOperation(value = "停车场列表2", notes = "停车场列表2")
     @GetMapping("/{id}")
     @SaCheckPermission("parking.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(parkingService.getById(id));
     }
 
-    @ApiOperation(value = "分页查询", notes = "分页查询", response = Order.class)
+    @ApiOperation(value = "分页查询", notes = "分页查询")
     @GetMapping("/page")
     @SaCheckPermission("parking.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
@@ -100,49 +101,48 @@ public class ParkingController {
         return Result.success(parkingService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
-    /**
-    * 导出接口
-    */
-    @ApiOperation(value = "导出", notes = "导出", response = Order.class)
-    @GetMapping("/export")
-    @SaCheckPermission("parking.export")
-    public void export(HttpServletResponse response) throws Exception {
-        // 从数据库查询出所有的数据
-        List<Parking> list = parkingService.list();
-        // 在内存操作，写出到浏览器
-        ExcelWriter writer = ExcelUtil.getWriter(true);
-
-        // 一次性写出list内的对象到excel，使用默认样式，强制输出标题
-        writer.write(list, true);
-
-        // 设置浏览器响应的格式
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        String fileName = URLEncoder.encode("Parking信息表", "UTF-8");
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
-
-        ServletOutputStream out = response.getOutputStream();
-        writer.flush(out, true);
-        out.close();
-        writer.close();
-
-    }
-
-    /**
-    * excel 导出
-    * @param file
-    * @throws Exception
-    */
-    @ApiOperation(value = "导出", notes = "导出", response = Order.class)
-    @PostMapping("/import")
-    @SaCheckPermission("parking.import")
-    public Result imp(MultipartFile file) throws Exception {
-        InputStream inputStream = file.getInputStream();
-        ExcelReader reader = ExcelUtil.getReader(inputStream);
-        // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
-        List<Parking> list = reader.readAll(Parking.class);
-
-        parkingService.saveBatch(list);
-        return Result.success("cg");
-    }
-
+//    /**
+//    * 导出接口
+//    */
+//    @ApiOperation(value = "导出", notes = "导出")
+//    @GetMapping("/export")
+//    @SaCheckPermission("parking.export")
+//    public void export(HttpServletResponse response) throws Exception {
+//        // 从数据库查询出所有的数据
+//        List<Parking> list = parkingService.list();
+//        // 在内存操作，写出到浏览器
+//        ExcelWriter writer = ExcelUtil.getWriter(true);
+//
+//        // 一次性写出list内的对象到excel，使用默认样式，强制输出标题
+//        writer.write(list, true);
+//
+//        // 设置浏览器响应的格式
+//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+//        String fileName = URLEncoder.encode("Parking信息表", "UTF-8");
+//        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
+//
+//        ServletOutputStream out = response.getOutputStream();
+//        writer.flush(out, true);
+//        out.close();
+//        writer.close();
+//
+//    }
+//
+//    /**
+//    * excel 导出
+//    * @param file
+//    * @throws Exception
+//    */
+//    @ApiOperation(value = "导出", notes = "导出")
+//    @PostMapping("/import")
+//    @SaCheckPermission("parking.import")
+//    public Result imp(MultipartFile file) throws Exception {
+//        InputStream inputStream = file.getInputStream();
+//        ExcelReader reader = ExcelUtil.getReader(inputStream);
+//        // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
+//        List<Parking> list = reader.readAll(Parking.class);
+//
+//        parkingService.saveBatch(list);
+//        return Result.success("cg");
+//    }
 }

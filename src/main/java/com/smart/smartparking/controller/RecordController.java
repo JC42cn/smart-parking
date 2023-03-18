@@ -10,6 +10,7 @@ import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Car;
 import com.smart.smartparking.entity.Record;
+import com.smart.smartparking.service.IParkingService;
 import com.smart.smartparking.service.IRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Random;
 
 /**
 * <p>
@@ -38,12 +40,16 @@ public class RecordController {
 
     @Resource
     private IRecordService recordService;
+    @Resource
+    private IParkingService parkingService;
 
     @ApiOperation(value = "新增停车记录", notes = "新增停车记录", response = Car.class)
     @AutoLog("新增停车记录")
     @PostMapping
     @SaCheckPermission("record.add")
     public Result save(@RequestBody Record record) {
+        long timestamp = System.currentTimeMillis();
+        record.setRid(timestamp);
         recordService.save(record);
         return Result.success("cg");
     }
@@ -144,5 +150,18 @@ public class RecordController {
         recordService.saveBatch(list);
         return Result.success("cg");
     }
+
+
+    @ApiOperation(value = "查询入库车辆数", notes = "查询入库车辆数")
+    @PostMapping("/count")
+    @SaCheckPermission("record.count")
+    public Result selectCount(String name){
+        int pid =  parkingService.selectParkingPid(name);
+        int spaceNumber = parkingService.selectParkingSpace(name);
+        int count =  recordService.selectCount(pid);
+        count = spaceNumber - count;
+        return Result.success(count);
+    }
+
 
 }
