@@ -9,11 +9,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Car;
+import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.entity.Record;
+import com.smart.smartparking.service.ICarService;
 import com.smart.smartparking.service.IParkingService;
 import com.smart.smartparking.service.IRecordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 /**
 * <p>
@@ -33,6 +36,7 @@ import java.util.Random;
 * @author  
 * @since 2023-02-28
 */
+@Slf4j
 @Api(tags = "API停车记录")
 @RestController
 @RequestMapping("/record")
@@ -42,6 +46,8 @@ public class RecordController {
     private IRecordService recordService;
     @Resource
     private IParkingService parkingService;
+    @Resource
+    private ICarService carService;
 
     @ApiOperation(value = "新增停车记录", notes = "新增停车记录", response = Car.class)
     @AutoLog("新增停车记录")
@@ -102,7 +108,7 @@ public class RecordController {
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<Record>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(name), "car_number", name);
         return Result.success(recordService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
@@ -153,15 +159,34 @@ public class RecordController {
 
 
     @ApiOperation(value = "查询入库车辆数", notes = "查询入库车辆数")
-    @PostMapping("/count")
     @SaCheckPermission("record.count")
-    public Result selectCount(String name){
-        int pid =  parkingService.selectParkingPid(name);
+    @PostMapping("/count")
+    public Result selectCount(@RequestBody Map<String, Object> requestBody){
+        String name = (String) requestBody.get("name");
+        if (name==null){
+            return Result.error("请选择停车场");
+        }
+        Long pid =  parkingService.selectParkingPid(name);
         int spaceNumber = parkingService.selectParkingSpace(name);
+        log.info("spaceNumber ="+spaceNumber);
         int count =  recordService.selectCount(pid);
+        log.info("count ="+count);
         count = spaceNumber - count;
-        return Result.success(count);
+        log.info("counts ="+count);
+        return Result.success(String.valueOf(count));
     }
 
+    @ApiOperation(value = "记录列表uid2", notes = "记录列表uid2")
+    @GetMapping("/findRecordByUid")
+    @SaCheckPermission("record.uidlist")
+    public Result findRecordByUid(@RequestParam(required = false) Integer uid,
+                                 @RequestParam Integer pageNum,
+                                 @RequestParam Integer pageSize) {
+        String carNumber  = carService.selectCarNumber(uid);
+        QueryWrapper<Record> queryWrapper = new QueryWrapper<Record>().orderByDesc("id");
+        queryWrapper.eq("car_number",carNumber);
+        //queryWrapper.like(!"".equals(name), "name", name);
+        return Result.success(recordService.page(new Page<>(pageNum, pageSize), queryWrapper));
+    }
 
 }

@@ -17,4 +17,5 @@ import java.util.List;
  * @since 2023-02-28
  */
 public interface IOrderService extends IService<Order> {
+    Order selectOrderPay(Long uid);
 }

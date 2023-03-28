@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Order;
+import com.smart.smartparking.entity.Parking;
 import com.smart.smartparking.entity.ParkingSpace;
+import com.smart.smartparking.service.IParkingService;
 import com.smart.smartparking.service.IParkingSpaceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,19 +40,21 @@ public class ParkingSpaceController {
 
     @Resource
     private IParkingSpaceService parkingSpaceService;
+    @Resource
+    private IParkingService parkingService;
 
     @ApiOperation(value = "新增停车位", notes = "新增停车位", response = Order.class)
     @AutoLog("新增停车位")
     @PostMapping
     @SaCheckPermission("parkingSpace.add")
     public Result save(@RequestBody ParkingSpace parkingSpace) {
-//        User user = SessionUtils.getUser();
-//        parkingSpace.setUser(user.getName());
-//        parkingSpace.setUserid(user.getId());
-//        parkingSpace.setDate(DateUtil.today());
-//        parkingSpace.setTime(DateUtil.now());
+        Parking parking = new Parking();
+        int spNumber = parking.getParkingSpaceNumber();
+        spNumber = spNumber+1;
+        parking.setParkingSpaceNumber(spNumber);
+        parkingService.updateById(parking);
         parkingSpaceService.save(parkingSpace);
-        return Result.success("cg");
+        return Result.success("新增车位成功");
     }
 
     @ApiOperation(value = "编辑停车位", notes = "编辑停车位", response = Order.class)
@@ -59,7 +63,7 @@ public class ParkingSpaceController {
     @SaCheckPermission("parkingSpace.edit")
     public Result update(@RequestBody ParkingSpace parkingSpace) {
         parkingSpaceService.updateById(parkingSpace);
-        return Result.success("cg");
+        return Result.success("修改成功");
     }
 
     @ApiOperation(value = "删除停车位", notes = "删除停车位", response = Order.class)
@@ -67,8 +71,13 @@ public class ParkingSpaceController {
     @DeleteMapping("/{id}")
     @SaCheckPermission("parkingSpace.delete")
     public Result delete(@PathVariable Integer id) {
+        Parking parking = new Parking();
+        int spNumber = parking.getParkingSpaceNumber();
+        spNumber = spNumber-1;
+        parking.setParkingSpaceNumber(spNumber);
+        parkingService.updateById(parking);
         parkingSpaceService.removeById(id);
-        return Result.success("cg");
+        return Result.success("删除成功");
     }
 
     @ApiOperation(value = "批量删除停车位", notes = "批量删除停车位", response = Order.class)

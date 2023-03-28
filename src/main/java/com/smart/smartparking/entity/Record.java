@@ -61,6 +61,7 @@ private static final long serialVersionUID = 1L;
     @Alias("停车费用")
     private BigDecimal money;
 
+
     // 停车场id
     @ApiModelProperty("停车场id")
     @Alias("停车场id")

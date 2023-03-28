@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface PermissionService extends IService<Permission> {
     List<Permission> tree();
+
     void deletePermission(Integer id);
 }

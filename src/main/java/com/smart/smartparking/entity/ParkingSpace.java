@@ -32,9 +32,9 @@ private static final long serialVersionUID = 1L;
     private Integer id;
 
     // 车位唯一id
-    @ApiModelProperty("车位唯一id")
-    @Alias("车位唯一id")
-    private Integer psid;
+    @ApiModelProperty("停车场id")
+    @Alias("停车场id")
+    private Integer pid;
 
     // 车位号
     @ApiModelProperty("车位号")

@@ -31,11 +31,7 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE) //插入和更新时填充字段
     private LocalDateTime updateTime;
 
-    private String sex;
-
-    private Integer age;
-
-    private String phone;
+    private String address;
 
     private String token;
 
@@ -46,5 +42,7 @@ public class User implements Serializable {
     private String flag;
 
     private Integer deleted;
+
+    private String avatar;
 
 }

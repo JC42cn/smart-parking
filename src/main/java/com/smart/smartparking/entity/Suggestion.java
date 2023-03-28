@@ -35,7 +35,7 @@ private static final long serialVersionUID = 1L;
     // 建议唯一id
     @ApiModelProperty("建议唯一id")
     @Alias("建议唯一id")
-    private Integer sid;
+    private Long sid;
 
     // 建议内容
     @ApiModelProperty("建议内容")
@@ -66,4 +66,14 @@ private static final long serialVersionUID = 1L;
     @Alias("逻辑删除 0存在  id删除")
     @TableLogic(value = "0", delval = "id")
     private Integer deleted;
+
+    // 回复状态
+    @ApiModelProperty("回复状态")
+    @Alias("回复状态")
+    private String state;
+
+    // 回复内容
+    @ApiModelProperty("回复内容")
+    @Alias("回复内容")
+    private String reply;
 }

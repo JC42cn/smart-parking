@@ -1,28 +1,18 @@
 package com.smart.smartparking.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.poi.excel.ExcelReader;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
-import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.entity.Parking;
 import com.smart.smartparking.service.IParkingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.List;
-import java.util.Map;
+
 
 /**
 * <p>

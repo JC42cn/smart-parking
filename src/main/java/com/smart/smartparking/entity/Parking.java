@@ -36,7 +36,7 @@ private static final long serialVersionUID = 1L;
     // 停车场唯一id
     @ApiModelProperty("停车场唯一id")
     @Alias("停车场唯一id")
-    private Integer pid;
+    private Long pid;
 
     // 名称
     @ApiModelProperty("名称")

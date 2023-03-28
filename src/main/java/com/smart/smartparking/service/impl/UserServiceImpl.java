@@ -5,11 +5,9 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.smart.smartparking.common.JwtUtil;
 import com.smart.smartparking.controller.domain.UserRequest;
 import com.smart.smartparking.entity.Permission;
 import com.smart.smartparking.entity.Role;
@@ -23,7 +21,8 @@ import com.smart.smartparking.service.UserService;
 import com.smart.smartparking.entity.User;
 import com.smart.smartparking.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.core.util.IdUtil;
@@ -85,6 +84,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         }
         return all;
     }
+
+
     //校验密码
     @Override
     public void checkPassword(UserRequest userRequest) {
@@ -137,9 +138,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
     @Override
     public void register(UserRequest user) {
+        User saveUser = new User();
+        BeanUtils.copyProperties(user, saveUser);   // 把请求数据的属性copy给存储数据库的属性
+        saveUser.setFlag("USER");
+        // 存储用户信息
+        saveUser(saveUser);
 
     }
-
 
     // 获取角色对应的菜单树
     private List<Permission> getTreePermission(List<Permission> all) {

@@ -8,6 +8,7 @@ import com.smart.smartparking.mapper.CarMapper;
 import org.springframework.stereotype.Service;
 
 import java.awt.geom.QuadCurve2D;
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +26,13 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
         QueryWrapper<Car> queryWrapper = new QueryWrapper<>();
         Car car = getOne(queryWrapper.eq("car_number",carNumber));
         return car;
+    }
+
+    @Override
+    public String selectCarNumber(int uid) {
+        QueryWrapper<Car> queryWrapper = new QueryWrapper();
+        Car car = getOne(queryWrapper.eq("uid",uid));
+        String carNumber = car.getCarNumber();
+        return carNumber;
     }
 }

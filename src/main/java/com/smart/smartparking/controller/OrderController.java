@@ -116,7 +116,7 @@ public class OrderController {
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<Order>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(name), "car_number", name);
         return Result.success(orderService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
@@ -183,7 +183,7 @@ public class OrderController {
 
 
     @PostMapping("/notify")  // 注意这里必须是POST接口
-    public String payNotify(HttpServletRequest request) throws Exception {
+    public Result payNotify(HttpServletRequest request) throws Exception {
         if (request.getParameter("trade_status").equals("TRADE_SUCCESS")) {
             System.out.println("=========支付宝异步回调========");
 
@@ -215,7 +215,7 @@ public class OrderController {
             // 更新订单已支付
             orderMapper.updateState(tradeNo, 1,gmtPayment,alipayTradeNo);
         }
-        return "success";
+        return Result.success("支付成功！请出库");
     }
 
     @ApiOperation(value = "订单列表uid", notes = "订单列表uid")

@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Car;
+import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.service.ICarService;
+import com.smart.smartparking.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -39,14 +41,19 @@ public class CarController {
     @Resource
     private ICarService carService;
 
+    @Resource
+    private UserService userService;
+
 
     @ApiOperation(value = "新增车辆", notes = "新增车辆", response = Car.class)
     @AutoLog("新增车辆")
     @PostMapping
     @SaCheckPermission("car.add")
     public Result save(@RequestBody Car car) {
+        long timestamp = System.currentTimeMillis();
+        car.setCid(timestamp);
         carService.save(car);
-        return Result.success("成功");
+        return Result.success("保存成功");
     }
 
     @ApiOperation(value = "编辑车辆", notes = "编辑车辆", response = Car.class)
@@ -144,6 +151,18 @@ public class CarController {
 
         carService.saveBatch(list);
         return Result.success("cg");
+    }
+
+    @ApiOperation(value = "车辆列表uid", notes = "车辆列表uid")
+    @GetMapping("/findCarByUid")
+    @SaCheckPermission("car.uidlist")
+    public Result findCarByUid(@RequestParam(required = false) Integer uid,
+                                 @RequestParam Integer pageNum,
+                                 @RequestParam Integer pageSize) {
+        QueryWrapper<Car> queryWrapper = new QueryWrapper<Car>().orderByDesc("id");
+        queryWrapper.eq("uid", uid);
+        //queryWrapper.like(!"".equals(name), "name", name);
+        return Result.success(carService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
 }

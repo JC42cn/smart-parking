@@ -32,12 +32,17 @@ private static final long serialVersionUID = 1L;
     // 车辆id
     @ApiModelProperty("车辆id")
     @Alias("车辆id")
-    private Integer cid;
+    private Long cid;
 
     // 车牌号
     @ApiModelProperty("车牌号")
     @Alias("车牌号")
     private String carNumber;
+
+    // 车主名
+    @ApiModelProperty("车主名")
+    @Alias("车主名")
+    private String username;
 
     // 逻辑删除
     @ApiModelProperty("逻辑删除")
@@ -48,5 +53,5 @@ private static final long serialVersionUID = 1L;
     // 用户id
     @ApiModelProperty("用户id")
     @Alias("用户id")
-    private Integer uid;
+    private Long uid;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.smartparking.common.Result;
+import com.smart.smartparking.entity.Car;
 import com.smart.smartparking.entity.Record;
 import com.smart.smartparking.mapper.RecordMapper;
 import com.smart.smartparking.service.IRecordService;
@@ -35,7 +36,7 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
     }
 
     @Override
-    public Integer selectCount(int pid) {
+    public Integer selectCount(Long pid) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
         queryWrapper.isNotNull("into_time").isNull("out_time").eq("pid",pid);
         int count = count(queryWrapper);
