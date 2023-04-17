@@ -46,10 +46,7 @@ private static final long serialVersionUID = 1L;
     @ApiModelProperty("创建时间")
     @Alias("创建时间")
     @TableField(fill = FieldFill.INSERT)
-    //@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime createTime;
 
     // 车位id
@@ -81,7 +78,7 @@ private static final long serialVersionUID = 1L;
     @ApiModelProperty("停车费用")
     @Alias("停车费用")
     private BigDecimal money;
-    // 停车费用
+
 
     @ApiModelProperty("车牌号")
     @Alias("车牌号")

@@ -36,17 +36,28 @@ private static final long serialVersionUID = 1L;
     // 停车场唯一id
     @ApiModelProperty("停车场唯一id")
     @Alias("停车场唯一id")
-    private Long pid;
+    private Integer pid;
 
     // 名称
     @ApiModelProperty("名称")
     @Alias("名称")
     private String name;
 
+    // admin名称
+    @ApiModelProperty("admin名称")
+    @Alias("admin名称")
+    private String admin;
+
+
     // 车位数量
     @ApiModelProperty("车位数量")
     @Alias("车位数量")
     private Integer parkingSpaceNumber;
+
+    // 车位总数量
+    @ApiModelProperty("车位总数量")
+    @Alias("车位总数量")
+    private Integer number;
 
     // 免费时长
     @ApiModelProperty("免费时长")
@@ -86,6 +97,6 @@ private static final long serialVersionUID = 1L;
     // 逻辑删除 0存在  id删除
     @ApiModelProperty("逻辑删除 0存在  id删除")
     @Alias("逻辑删除 0存在  id删除")
-    @TableLogic(value = "0", delval = "id")
+    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 }

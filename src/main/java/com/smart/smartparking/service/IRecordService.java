@@ -3,6 +3,9 @@ package com.smart.smartparking.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.smart.smartparking.entity.Record;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  *  服务类
@@ -13,6 +16,11 @@ import com.smart.smartparking.entity.Record;
  */
 public interface IRecordService extends IService<Record> {
     Record getByPlateNumber(String plateNumber,int pid);
-    Integer selectCount(Long pid);
+
+    List<Map<String, Object>> findRecordCountByDay(String today, int day);
+
+    Integer findRecordCount();
+
+//    Integer findRecordCountByDay(String today,int day);
 
 }

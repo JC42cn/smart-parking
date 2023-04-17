@@ -13,4 +13,14 @@ import com.smart.smartparking.entity.ParkingSpace;
  */
 public interface IParkingSpaceService extends IService<ParkingSpace> {
 
+    ParkingSpace findPaekingSpace( ParkingSpace parkingSpace);
+
+    ParkingSpace findParkingSpaceById(Integer id);
+
+    //根据psNumber和pid查找车位
+    ParkingSpace findParkingSpaceByPsNumber(int psNumber , int pid);
+
+    int findParkingSpaceCountByPid(int pid);
+
+
 }

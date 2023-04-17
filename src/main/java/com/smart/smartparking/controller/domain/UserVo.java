@@ -14,9 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
-
+public class UserVo implements Serializable {
     private User user;
     private String token;
     private List<Permission> menus;

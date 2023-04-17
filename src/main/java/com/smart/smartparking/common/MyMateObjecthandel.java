@@ -16,12 +16,14 @@ public class MyMateObjecthandel implements MetaObjectHandler {
 public void insertFill(MetaObject metaObject) {
     this.strictInsertFill(metaObject, "createTime", LocalDateTime::now, LocalDateTime.class);
     this.strictInsertFill(metaObject, "intoTime", LocalDateTime::now, LocalDateTime.class);
+    this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
+    this.strictUpdateFill(metaObject, "entryTime", LocalDateTime::now, LocalDateTime.class);
 }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         this.strictUpdateFill(metaObject, "updateTime", LocalDateTime::now, LocalDateTime.class);
-        this.strictUpdateFill(metaObject, "outTime", LocalDateTime::now, LocalDateTime.class);
+        //this.strictUpdateFill(metaObject, "outTime", LocalDateTime::now, LocalDateTime.class);
     }
 
 }

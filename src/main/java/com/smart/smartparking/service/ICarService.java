@@ -1,6 +1,7 @@
 package com.smart.smartparking.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.entity.Car;
 
 /**

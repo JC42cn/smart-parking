@@ -11,9 +11,12 @@ import com.smart.smartparking.service.IRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.awt.geom.QuadCurve2D;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,6 +30,10 @@ import java.util.Date;
 @Service
 public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> implements IRecordService {
 
+
+    @Resource
+    private RecordMapper resourceMapper;
+
     @Override
     public Record getByPlateNumber(String plateNumber,int pid) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
@@ -36,11 +43,30 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
     }
 
     @Override
-    public Integer selectCount(Long pid) {
-        QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
-        queryWrapper.isNotNull("into_time").isNull("out_time").eq("pid",pid);
-        int count = count(queryWrapper);
-        return count;
+    public List<Map<String, Object>> findRecordCountByDay(String today, int day) {
+        return resourceMapper.getRecordCountByDayAndPid(today,day);
     }
+
+    @Override
+    public Integer findRecordCount() {
+        QueryWrapper<Record> qw = new QueryWrapper<>();
+        return count(qw);
+    }
+
+//    @Override
+//    public Integer findRecordCountByDay(String today, int day) {
+//        int counts = resourceMapper.getRecordCountByDay(today,day);
+//        return counts;
+//    }
+
+//    @Override
+//    public Integer selectCount(Integer pid) {
+//        QueryWrapper<Record> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.isNotNull("into_time").isNull("out_time").eq("pid",pid);
+//        int count = count(queryWrapper);
+//        return count;
+//    }
+
+
 
 }

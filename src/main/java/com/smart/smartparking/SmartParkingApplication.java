@@ -8,14 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 
 @Slf4j
 @SpringBootApplication
-//@ServletComponentScan
-//@EnableConfigurationProperties({BaiDuProperties.class})
+//@EnableScheduling
 public class SmartParkingApplication {
 
     public static void main(String[] args) {

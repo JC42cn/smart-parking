@@ -2,10 +2,10 @@ package com.smart.smartparking.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.smart.smartparking.entity.Order;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,5 +21,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     void updateState(@Param("oid") String tradeNo,@Param("state") Integer state , @Param("payTime") String gmtPayment,
                      @Param("alipayNo") String alipayTradeNo);
 
+    List<Map<String, Object>> findOrderMoneyByDay(@Param("day") int day);
 
 }

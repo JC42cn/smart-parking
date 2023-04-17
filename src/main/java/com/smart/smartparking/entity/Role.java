@@ -29,7 +29,7 @@ public class Role implements Serializable{
     // 逻辑删除
     @ApiModelProperty("逻辑删除")
     @Alias("逻辑删除")
-    @TableLogic(value = "0", delval = "id")
+    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 
     // 标志 USER为普通用户 ADMIN为管理人员

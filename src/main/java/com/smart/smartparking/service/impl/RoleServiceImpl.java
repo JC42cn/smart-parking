@@ -6,6 +6,9 @@ import com.smart.smartparking.mapper.RoleMapper;
 import com.smart.smartparking.service.RoleService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
 }

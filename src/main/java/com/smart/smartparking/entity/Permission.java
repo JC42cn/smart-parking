@@ -62,6 +62,7 @@ public class Permission implements Serializable {
     private Integer type;
 
     private Integer orders;
+
     @TableField(exist = false)
     private List<Permission> children;
 }

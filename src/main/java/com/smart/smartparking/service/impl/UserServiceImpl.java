@@ -1,14 +1,13 @@
 package com.smart.smartparking.service.impl;
 
-import cn.dev33.satoken.secure.BCrypt;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.BCrypt;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.smart.smartparking.controller.domain.UserRequest;
+import com.smart.smartparking.controller.domain.UserVo;
 import com.smart.smartparking.entity.Permission;
 import com.smart.smartparking.entity.Role;
 import com.smart.smartparking.entity.RolePermission;
@@ -19,13 +18,11 @@ import com.smart.smartparking.service.RolePermissionService;
 import com.smart.smartparking.service.RoleService;
 import com.smart.smartparking.service.UserService;
 import com.smart.smartparking.entity.User;
-import com.smart.smartparking.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import cn.hutool.core.util.IdUtil;
+
 import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +33,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements UserService {
 
-    private static final long TIME_IN_MS5 = 5 * 60 * 1000;  // 表示5分钟的毫秒数
 
     @Resource
     RolePermissionService rolePermissionService;
@@ -46,6 +42,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
     @Resource
     PermissionService permissionService;
+
+    @Resource
+    UserMapper userMapper;
+
 
     @Override
     public UserVo login(User user) {
@@ -87,20 +87,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
 
 
     //校验密码
-    @Override
-    public void checkPassword(UserRequest userRequest) {
-        User dbUser = getOne(new UpdateWrapper<User>().eq("uid", userRequest.getUid()));
-        if (dbUser == null) {
-            throw new ServiceException("未找到用户");
-        }
-        boolean checkPSD = BCrypt.checkpw(userRequest.getPassword(), dbUser.getPassword());
-        if (!checkPSD) {
-            throw new ServiceException("原密码错误");
-        }
-        String newPass = userRequest.getNewPassword();
-        dbUser.setPassword(BCrypt.hashpw(newPass));
-        updateById(dbUser);   // 设置到数据库
-    }
+//    @Override
+//    public void checkPassword(UserRequest userRequest) {
+//        User dbUser = getOne(new UpdateWrapper<User>().eq("uid", userRequest.getUid()));
+//        if (dbUser == null) {
+//            throw new ServiceException("未找到用户");
+//        }
+//        boolean checkPSD = BCrypt.checkpw(userRequest.getPassword(), dbUser.getPassword());
+//        if (!checkPSD) {
+//            throw new ServiceException("原密码错误");
+//        }
+//        String newPass = userRequest.getNewPassword();
+//        dbUser.setPassword(BCrypt.hashpw(newPass));
+//        updateById(dbUser);   // 设置到数据库
+//    }
 
     @Override
     public User saveUser(User user) {
@@ -120,7 +120,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         // 加密用户密码
         //user.setPassword(BCrypt.hashpw(user.getPassword()));  // BCrypt加密
         // 设置唯一标识
-        user.setUid(IdUtil.fastSimpleUUID());
+        long timestamp = System.currentTimeMillis();
+        user.setUid(timestamp);
         try {
             save(user);
         } catch (Exception e) {
@@ -129,22 +130,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         return user;
     }
 
-
     @Override
-    public void logout(String uid) {
-        StpUtil.logout(uid);
-        log.info("用户{}退出成功",uid);
+    public User findUserByUsername(String username) {
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        User user = getOne(qw.eq("username",username));
+        return user;
     }
 
     @Override
-    public void register(UserRequest user) {
-        User saveUser = new User();
-        BeanUtils.copyProperties(user, saveUser);   // 把请求数据的属性copy给存储数据库的属性
-        saveUser.setFlag("USER");
-        // 存储用户信息
-        saveUser(saveUser);
-
+    public User findUserByNameAndPSW(String username, String password) {
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        User user = getOne(qw.eq("username",username).eq("password",password));
+        return user;
     }
+
+    @Override
+    public User findUserByUid(Long uid) {
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        User user = getOne(qw.eq("uid",uid));
+        return user;
+    }
+
+
 
     // 获取角色对应的菜单树
     private List<Permission> getTreePermission(List<Permission> all) {
@@ -159,5 +166,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,User> implements Use
         return parentList.stream().sorted(Comparator.comparing(Permission::getOrders)).collect(Collectors.toList());  // 排序
     }
 
+    @Override
+    public void passwordChange(UserRequest userRequest) {
+        User dbUser = getOne(new UpdateWrapper<User>().eq("uid", userRequest.getUid()));
+        if (dbUser == null) {
+            throw new ServiceException("未找到用户");
+        }
+        boolean checkpwd = userRequest.getPassword().equals(dbUser.getPassword());
+        log.info(checkpwd+"==========================>checkpwd");
+        log.info(userRequest.getPassword()+"==========================>checkpwd");
+        log.info(dbUser.getPassword()+"==========================>checkpwd");
+        if (!checkpwd) {
+            throw new ServiceException("原密码错误");
+        }
+        String newPass = userRequest.getNewPassword();
+        dbUser.setPassword(newPass);
+        updateById(dbUser);   // 设置到数据库
+    }
+
+    @Override
+    public Integer selectUserNumber() {
+        int  userNumber = userMapper.selectUserNumber();
+        return userNumber;
+    }
 
 }

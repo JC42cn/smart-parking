@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.smartparking.mapper.RecordMapper">
+
+    <select id="getRecordCountByDayAndPid" resultType="java.util.Map">
+        SELECT
+        COUNT(*) as count,
+        parking.NAME as name
+        FROM
+        record,
+        parking
+        WHERE
+        into_time BETWEEN
+        DATE(#{today} - INTERVAL #{day} DAY)
+        AND DATE(#{today} <if test="day == 0"> + INTERVAL 1 DAY</if>)
+        AND record.pid = parking.pid
+        GROUP BY
+        parking.pid,
+        parking.name;
+	</select>
+
+</mapper>

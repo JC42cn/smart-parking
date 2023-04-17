@@ -1,10 +1,5 @@
 package com.smart.smartparking.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.hutool.extra.tokenizer.TokenizerUtil;
-import cn.hutool.poi.excel.ExcelReader;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.alipay.easysdk.factory.Factory;
 import com.alipay.easysdk.payment.page.models.AlipayTradePagePayResponse;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,23 +8,23 @@ import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.controller.domain.AliPay;
 import com.smart.smartparking.entity.Order;
+import com.smart.smartparking.entity.Parking;
+import com.smart.smartparking.entity.User;
 import com.smart.smartparking.mapper.OrderMapper;
 import com.smart.smartparking.service.IOrderService;
+
+import com.smart.smartparking.service.IParkingService;
+import com.smart.smartparking.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import sun.security.smartcardio.SunPCSC;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +50,16 @@ public class OrderController {
     @Resource
     private OrderMapper orderMapper;
 
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private IParkingService parkingService;
+
     @ApiOperation(value = "新增订单", notes = "新增订单", response = Order.class)
     @AutoLog("新增订单")
     @PostMapping
-    @SaCheckPermission("order.add")
+    //@SaCheckPermission("order.add")
     public Result save(@RequestBody Order order) {
         orderService.save(order);
         return Result.success("cg");
@@ -67,7 +68,7 @@ public class OrderController {
     @ApiOperation(value = "编辑订单", notes = "编辑订单", response = Order.class)
     @AutoLog("编辑订单")
     @PutMapping
-    @SaCheckPermission("order.edit")
+    //@SaCheckPermission("order.edit")
     public Result update(@RequestBody Order order) {
         long timestamp = System.currentTimeMillis();
         Random random = new Random();
@@ -80,7 +81,7 @@ public class OrderController {
     @ApiOperation(value = "删除订单", notes = "删除订单", response = Order.class)
     @AutoLog("删除订单")
     @DeleteMapping("/{id}")
-    @SaCheckPermission("order.delete")
+    //@SaCheckPermission("order.delete")
     public Result delete(@PathVariable Integer id) {
         orderService.removeById(id);
         return Result.success("cg");
@@ -89,7 +90,7 @@ public class OrderController {
     @ApiOperation(value = "批量删除订单", notes = "批量删除订单", response = Order.class)
     @AutoLog("批量删除订单")
     @PostMapping("/del/batch")
-    @SaCheckPermission("order.deleteBatch")
+    //@SaCheckPermission("order.deleteBatch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         orderService.removeByIds(ids);
         return Result.success("cg");
@@ -97,26 +98,28 @@ public class OrderController {
 
     @ApiOperation(value = "订单列表", notes = "订单列表", response = Order.class)
     @GetMapping
-    @SaCheckPermission("order.list")
+    //@SaCheckPermission("order.list")
     public Result findAll() {
         return Result.success(orderService.list());
     }
 
     @ApiOperation(value = "订单列表2", notes = "订单列表2", response = Order.class)
     @GetMapping("/{id}")
-    @SaCheckPermission("order.list")
+    //@SaCheckPermission("order.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(orderService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Order.class)
     @GetMapping("/page")
-    @SaCheckPermission("order.list")
+    //@SaCheckPermission("order.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
+                           @RequestParam String payTime,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<Order>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "car_number", name);
+        queryWrapper.like(!"".equals(name), "car_number", name).
+                like(!"".equals(payTime), "pay_time", payTime);
         return Result.success(orderService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
@@ -166,7 +169,7 @@ public class OrderController {
 //    }
 
     @ApiOperation(value = "支付", notes = "支付", response = Order.class)
-    @SaCheckPermission("order.apy")
+    //@SaCheckPermission("order.apy")
     @GetMapping("/pay") // &subject=xxx&traceNo=xxx&totalAmount=xxx
     public String pay(AliPay aliPay) {
         AlipayTradePagePayResponse response;
@@ -220,14 +223,46 @@ public class OrderController {
 
     @ApiOperation(value = "订单列表uid", notes = "订单列表uid")
     @GetMapping("/findOrderByUid")
-    @SaCheckPermission("order.uidlist")
-    public Result findOrderByUid(@RequestParam(required = false) Integer uid,
+    //@SaCheckPermission("order.uidlist")
+    public Result findOrderByUid(@RequestParam(required = false) Long uid,
                                  @RequestParam Integer pageNum,
+                                 @RequestParam String payTime,
                                  @RequestParam Integer pageSize) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<Order>().orderByDesc("id");
         queryWrapper.eq("uid", uid);
-        //queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(payTime), "pay_time", payTime);
         return Result.success(orderService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
+
+    @ApiOperation(value = "订单列表根据admin", notes = "订单列表根据admin")
+    @GetMapping("/findOrderByAdmin")
+    public Result findOrderByPid(@RequestParam(defaultValue = "") String name,
+                                 @RequestParam Long uid,
+                                 @RequestParam String payTime,
+                                 @RequestParam Integer pageNum,
+                                 @RequestParam Integer pageSize) {
+        User user = userService.findUserByUid(uid);
+        String username = user.getName();
+        Parking parking = parkingService.findPakringByAdmin(username);
+        int pid = parking.getPid();
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<Order>().orderByDesc("id");
+        queryWrapper.like(!"".equals(name), "car_number", name).
+                like(!"".equals(payTime), "pay_time", payTime).
+                eq("pid", pid);
+
+        return Result.success(orderService.page(new Page<>(pageNum, pageSize), queryWrapper));
+    }
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("/findOrderMoneyByDay")
+    public Result findOrderMoneyByDay(@RequestParam int day){
+        return Result.success(orderService.findOrderMoneyByDay(day));
+    }
+
+    @ApiOperation(value = "", notes = "")
+    @GetMapping("/findOrderCount")
+    public Result findOrderCount(){
+        return Result.success(orderService.findOrderCount());
+    }
+
 }
 

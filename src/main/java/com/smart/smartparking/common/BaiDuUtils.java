@@ -104,6 +104,7 @@ public class BaiDuUtils {
             log.info(res.toString());
 
             Object result = res.get("words_result");
+
             JSONArray array = JSON.parseArray(result.toString());
             com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
 

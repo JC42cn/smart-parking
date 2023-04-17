@@ -70,10 +70,16 @@ private static final long serialVersionUID = 1L;
     // 逻辑删除 0存在  id删除
     @ApiModelProperty("逻辑删除 0存在  id删除")
     @Alias("逻辑删除 0存在  id删除")
-    @TableLogic(value = "0", delval = "id")
+    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 
     @ApiModelProperty("逻辑完成 0未完成 1完成")
     @Alias("逻辑完成 0未完成 1完成")
     private Integer state;
+
+
+    // 车位号
+    @ApiModelProperty("车位号")
+    @Alias("车位号")
+    private int psNumber;
 }

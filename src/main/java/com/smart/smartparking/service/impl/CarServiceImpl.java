@@ -2,6 +2,7 @@ package com.smart.smartparking.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.smart.smartparking.common.Result;
 import com.smart.smartparking.service.ICarService;
 import com.smart.smartparking.entity.Car;
 import com.smart.smartparking.mapper.CarMapper;
@@ -35,4 +36,6 @@ public class CarServiceImpl extends ServiceImpl<CarMapper, Car> implements ICarS
         String carNumber = car.getCarNumber();
         return carNumber;
     }
+
+
 }

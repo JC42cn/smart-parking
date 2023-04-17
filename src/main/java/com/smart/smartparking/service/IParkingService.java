@@ -3,6 +3,8 @@ package com.smart.smartparking.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.smart.smartparking.entity.Parking;
 
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -17,7 +19,16 @@ public interface IParkingService extends IService<Parking> {
 
     Parking select(String name);
 
-    Integer selectParkingSpace(String name);
+    Integer selectParkingSpaceCount(String name);
 
-    Long selectParkingPid(String name);
+    Integer selectParkingPid(String name);
+
+    Parking selectParkingByPid(int pid);
+
+    Parking findPakringByAdmin(String admin);
+
+    Map<String, Object> findParkingNumber();
+
+
+
 }

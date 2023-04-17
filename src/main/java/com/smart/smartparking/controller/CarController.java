@@ -1,6 +1,5 @@
 package com.smart.smartparking.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -9,13 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.annotation.AutoLog;
 import com.smart.smartparking.entity.Car;
-import com.smart.smartparking.entity.Order;
 import com.smart.smartparking.service.ICarService;
 import com.smart.smartparking.service.UserService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
@@ -33,6 +30,7 @@ import java.util.List;
 * @author  
 * @since 2023-02-28
 */
+@Slf4j
 @RestController
 @RequestMapping("/car")
 @Api(tags = "API车辆管理")
@@ -45,21 +43,29 @@ public class CarController {
     private UserService userService;
 
 
-    @ApiOperation(value = "新增车辆", notes = "新增车辆", response = Car.class)
+    @ApiOperation(value = "新增车辆", notes = "新增车辆")
     @AutoLog("新增车辆")
     @PostMapping
-    @SaCheckPermission("car.add")
+    //@SaCheckPermission("car.add")
     public Result save(@RequestBody Car car) {
-        long timestamp = System.currentTimeMillis();
-        car.setCid(timestamp);
-        carService.save(car);
-        return Result.success("保存成功");
+//        long timestamp = System.currentTimeMillis();
+//        car.setCid(timestamp);
+        Long uid = car.getUid();
+        if (uid==0){
+            return Result.error("请输入用户号");
+        }else {
+            car.setUid(uid);
+            carService.save(car);
+            log.info("新增车辆");
+            return Result.success("新增车辆成功");
+        }
+
     }
 
     @ApiOperation(value = "编辑车辆", notes = "编辑车辆", response = Car.class)
     @AutoLog("编辑车辆")
     @PutMapping
-    @SaCheckPermission("car.edit")
+    //@SaCheckPermission("car.edit")
     public Result update(@RequestBody Car car) {
         carService.updateById(car);
         return Result.success("cg");
@@ -68,7 +74,7 @@ public class CarController {
     @ApiOperation(value = "删除车辆", notes = "删除车辆", response = Car.class)
     @AutoLog("删除车辆")
     @DeleteMapping("/{id}")
-    @SaCheckPermission("car.delete")
+    //@SaCheckPermission("car.delete")
     public Result delete(@PathVariable Integer id) {
         carService.removeById(id);
         return Result.success("cg");
@@ -77,7 +83,7 @@ public class CarController {
     @ApiOperation(value = "批量删除车辆", notes = "批量删除车辆", response = Car.class)
     @AutoLog("批量删除车辆")
     @PostMapping("/del/batch")
-    @SaCheckPermission("car.deleteBatch")
+    //@SaCheckPermission("car.deleteBatch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         carService.removeByIds(ids);
         return Result.success("cg");
@@ -85,21 +91,21 @@ public class CarController {
 
     @ApiOperation(value = "车辆列表", notes = "车辆列表", response = Car.class)
     @GetMapping
-    @SaCheckPermission("car.list")
+    //@SaCheckPermission("car.list")
     public Result findAll() {
         return Result.success(carService.list());
     }
 
     @ApiOperation(value = "车辆列表2", notes = "车辆列表2", response = Car.class)
     @GetMapping("/{id}")
-    @SaCheckPermission("car.list")
+    //@SaCheckPermission("car.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(carService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Car.class)
     @GetMapping("/page")
-    @SaCheckPermission("car.list")
+    //@SaCheckPermission("car.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
@@ -113,7 +119,7 @@ public class CarController {
     */
     @ApiOperation(value = "导出", notes = "导出", response = Car.class)
     @GetMapping("/export")
-    @SaCheckPermission("car.export")
+    //@SaCheckPermission("car.export")
     public void export(HttpServletResponse response) throws Exception {
         // 从数据库查询出所有的数据
         List<Car> list = carService.list();
@@ -142,7 +148,7 @@ public class CarController {
     */
     @ApiOperation(value = "导入", notes = "导入", response = Car.class)
     @PostMapping("/import")
-    @SaCheckPermission("car.import")
+    //@SaCheckPermission("car.import")
     public Result imp(MultipartFile file) throws Exception {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
@@ -155,7 +161,7 @@ public class CarController {
 
     @ApiOperation(value = "车辆列表uid", notes = "车辆列表uid")
     @GetMapping("/findCarByUid")
-    @SaCheckPermission("car.uidlist")
+    //@SaCheckPermission("car.uidlist")
     public Result findCarByUid(@RequestParam(required = false) Integer uid,
                                  @RequestParam Integer pageNum,
                                  @RequestParam Integer pageSize) {

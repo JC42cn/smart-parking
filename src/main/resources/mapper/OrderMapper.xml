@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smart.smartparking.mapper.OrderMapper">
+    <select id="findOrderMoneyByDay"  resultType="java.util.Map">
+        SELECT
+            p.NAME as name,
+            SUM( o.money ) AS sumMoney
+        FROM
+            parking p
+                JOIN orders o ON p.pid = o.pid
+        WHERE
+            o.create_time >= DATE_SUB( CURDATE(), INTERVAL #{day} DAY )
+        GROUP BY
+            p.NAME
+        ORDER BY
+            p.NAME
+    </select>
+
+</mapper>

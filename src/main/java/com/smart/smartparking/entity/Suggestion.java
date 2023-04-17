@@ -45,7 +45,7 @@ private static final long serialVersionUID = 1L;
     // 用户id
     @ApiModelProperty("用户id")
     @Alias("用户id")
-    private Integer uid;
+    private Long uid;
 
     // 创建时间
     @ApiModelProperty("创建时间")
@@ -62,9 +62,9 @@ private static final long serialVersionUID = 1L;
     private String username;
 
     // 逻辑删除 0存在  id删除
-    @ApiModelProperty("逻辑删除 0存在  id删除")
+    @ApiModelProperty("逻辑删除 0存在  1删除")
     @Alias("逻辑删除 0存在  id删除")
-    @TableLogic(value = "0", delval = "id")
+    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 
     // 回复状态

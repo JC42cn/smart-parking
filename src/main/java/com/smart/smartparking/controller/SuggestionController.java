@@ -1,6 +1,6 @@
 package com.smart.smartparking.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+//import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -43,7 +43,6 @@ public class SuggestionController {
     @ApiOperation(value = "新增建议", notes = "新增建议")
     @AutoLog("新增建议")
     @PostMapping
-    @SaCheckPermission("suggestion.add")
     public Result save(@RequestBody Suggestion suggestion) {
         long timestamp = System.currentTimeMillis();
         suggestion.setSid(timestamp);
@@ -54,7 +53,6 @@ public class SuggestionController {
     @ApiOperation(value = "编辑建议", notes = "编辑建议")
     @AutoLog("编辑建议")
     @PutMapping
-    @SaCheckPermission("suggestion.edit")
     public Result update(@RequestBody Suggestion suggestion) {
         suggestionService.updateById(suggestion);
         return Result.success("编辑成功");
@@ -63,7 +61,7 @@ public class SuggestionController {
     @ApiOperation(value = "删除建议", notes = "删除建议")
     @AutoLog("删除建议")
     @DeleteMapping("/{id}")
-    @SaCheckPermission("suggestion.delete")
+    //@SaCheckPermission("suggestion.delete")
     public Result delete(@PathVariable Integer id) {
         suggestionService.removeById(id);
         return Result.success("删除成功");
@@ -72,7 +70,7 @@ public class SuggestionController {
     @ApiOperation(value = "批量删除建议", notes = "批量删除建议")
     @AutoLog("批量删除建议")
     @PostMapping("/del/batch")
-    @SaCheckPermission("suggestion.deleteBatch")
+    //@SaCheckPermission("suggestion.deleteBatch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         suggestionService.removeByIds(ids);
         return Result.success("批量删除成功");
@@ -80,21 +78,20 @@ public class SuggestionController {
 
     @ApiOperation(value = "建议列表", notes = "建议列表")
     @GetMapping
-    @SaCheckPermission("suggestion.list")
+   // @SaCheckPermission("suggestion.list")
     public Result findAll() {
         return Result.success(suggestionService.list());
     }
 
     @ApiOperation(value = "建议列表2", notes = "建议列表2")
     @GetMapping("/{id}")
-    @SaCheckPermission("suggestion.list")
+    //@SaCheckPermission("suggestion.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(suggestionService.getById(id));
     }
 
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @GetMapping("/page")
-    @SaCheckPermission("suggestion.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
@@ -150,13 +147,13 @@ public class SuggestionController {
 
     @ApiOperation(value = "Suggestion列表uid", notes = "Suggestion列表uid")
     @GetMapping("/findSuggestionByUid")
-    @SaCheckPermission("Suggestion.uidlist")
+   //@SaCheckPermission("Suggestion.uidlist")
     public Result findOrderByUid(@RequestParam(required = false) Integer uid,
+                                 @RequestParam(defaultValue = "") String name,
                                  @RequestParam Integer pageNum,
                                  @RequestParam Integer pageSize) {
         QueryWrapper<Suggestion> queryWrapper = new QueryWrapper<Suggestion>().orderByDesc("id");
-        queryWrapper.eq("uid", uid);
-        //queryWrapper.like(!"".equals(name), "name", name);
+        queryWrapper.like(!"".equals(name), "name", name).eq("uid", uid);
         return Result.success(suggestionService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 

@@ -1,6 +1,6 @@
 package com.smart.smartparking.controller;
 
-import cn.dev33.satoken.annotation.SaCheckPermission;
+//import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.IdUtil;
@@ -202,7 +202,7 @@ public class FileController {
 
     @AutoLog("新增文件记录")
     @PostMapping
-    @SaCheckPermission("file.add")
+    //@SaCheckPermission("file.add")
     public Result save(@RequestBody File file) {
         fileService.save(file);
         return Result.success();
@@ -210,7 +210,7 @@ public class FileController {
 
     @AutoLog("编辑文件记录")
     @PutMapping
-    @SaCheckPermission("file.edit")
+   // @SaCheckPermission("file.edit")
     public Result update(@RequestBody File file) {
         fileService.updateById(file);
         return Result.success();
@@ -218,7 +218,7 @@ public class FileController {
 
     @AutoLog("删除文件记录")
     @DeleteMapping("/{id}")
-    @SaCheckPermission("file.delete")
+    //@SaCheckPermission("file.delete")
     public Result delete(@PathVariable Integer id) {
         fileService.removeById(id);
         return Result.success();
@@ -226,26 +226,26 @@ public class FileController {
 
     @AutoLog("批量删除文件记录")
     @PostMapping("/del/batch")
-    @SaCheckPermission("file.deleteBatch")
+    //@SaCheckPermission("file.deleteBatch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         fileService.removeByIds(ids);
         return Result.success();
     }
 
     @GetMapping
-    @SaCheckPermission("file.list")
+    //@SaCheckPermission("file.list")
     public Result findAll() {
         return Result.success(fileService.list());
     }
 
     @GetMapping("/{id}")
-    @SaCheckPermission("file.list")
+    //@SaCheckPermission("file.list")
     public Result findOne(@PathVariable Integer id) {
         return Result.success(fileService.getById(id));
     }
 
     @GetMapping("/page")
-    @SaCheckPermission("file.list")
+    //@SaCheckPermission("file.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {

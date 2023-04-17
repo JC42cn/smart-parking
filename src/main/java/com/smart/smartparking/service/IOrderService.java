@@ -7,6 +7,7 @@ import com.smart.smartparking.entity.Record;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,4 +19,8 @@ import java.util.List;
  */
 public interface IOrderService extends IService<Order> {
     Order selectOrderPay(Long uid);
+
+    List<Map<String, Object>> findOrderMoneyByDay(int day);
+
+    Integer findOrderCount();
 }
