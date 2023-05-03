@@ -168,8 +168,6 @@ public class BookingsController {
                            @RequestParam Integer pageSize) {
         QueryWrapper<Bookings> queryWrapper = new QueryWrapper<Bookings>().orderByDesc("id");
         if (pid != 0 ){
-            Parking parking = parkingService.selectParkingByPid(pid);
-            String name = parking.getName();
             queryWrapper.eq("pid",pid);
         }
         return Result.success(bookingsService.page(new Page<>(pageNum, pageSize), queryWrapper));

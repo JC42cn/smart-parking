@@ -122,12 +122,27 @@ public class ParkingSpaceController {
 
     @ApiOperation(value = "分页查询", notes = "分页查询", response = Order.class)
     @GetMapping("/page")
-    //@SaCheckPermission("parkingSpace.list")
     public Result findPage(@RequestParam(defaultValue = "") String psNumber,
+                           @RequestParam int pid,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
         QueryWrapper<ParkingSpace> queryWrapper = new QueryWrapper<ParkingSpace>().orderByDesc("id");
-        queryWrapper.like(!"".equals(psNumber), "ps_number", psNumber);
+        int psNUMBER;
+        if (psNumber==null || psNumber.equals("")){
+            psNUMBER = 0;
+        }else {
+            psNUMBER  = Integer.parseInt(psNumber);
+        }
+
+        if (pid != 0 && psNUMBER!= 0 ){
+            queryWrapper.eq("pid",pid).eq("ps_number",psNUMBER);
+        }else if(pid!=0){
+            queryWrapper.eq("pid",pid);
+        }else if( psNUMBER!=0){
+            queryWrapper.eq("ps_number",psNUMBER);
+        }else {
+            queryWrapper.like(!"".equals(psNumber), "ps_number", psNumber);
+        }
         return Result.success(parkingSpaceService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
@@ -135,7 +150,7 @@ public class ParkingSpaceController {
     @ApiOperation(value = "分页查询", notes = "分页查询")
     @GetMapping("/adminpage")
     //@SaCheckPermission("parkingSpace.list")
-    public Result adminpage(@RequestParam(defaultValue = "") int  name,
+    public Result adminpage(@RequestParam(defaultValue = "") String psNumber,
                            @RequestParam Integer pageNum,
                             @RequestParam(required = false) Long uid,
                            @RequestParam Integer pageSize) {
@@ -144,11 +159,17 @@ public class ParkingSpaceController {
         Parking parking = parkingService.findPakringByAdmin(username);
         int pid = parking.getPid();
         QueryWrapper<ParkingSpace> queryWrapper = new QueryWrapper<ParkingSpace>().orderByDesc("id");
-        log.info(name+"name=================================================>");
-        if (name==0){
-            queryWrapper.eq("pid",pid);
+        int psNUMBER;
+        if (psNumber==null || psNumber.equals("")){
+            psNUMBER = 0;
         }else {
-            queryWrapper.eq("ps_number", name).eq("pid",pid);
+            psNUMBER  = Integer.parseInt(psNumber);
+        }
+        if(psNUMBER!= 0){
+           queryWrapper.eq("pid",pid).eq("ps_number",psNumber);
+        }
+        else {
+            queryWrapper.eq("pid",pid);
         }
         return Result.success(parkingSpaceService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }

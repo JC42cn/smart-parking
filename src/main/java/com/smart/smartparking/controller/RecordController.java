@@ -128,9 +128,13 @@ public class RecordController {
     //@SaCheckPermission("record.list")
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
+                           @RequestParam String intoTime,
+                           @RequestParam String outTime,
                            @RequestParam Integer pageSize) {
         QueryWrapper<Record> queryWrapper = new QueryWrapper<Record>().orderByDesc("id");
-        queryWrapper.like(!"".equals(name), "car_number", name);
+        queryWrapper.like(!"".equals(name), "car_number", name)
+                .like(!"".equals(intoTime), "into_time", intoTime)
+                .like(!"".equals(outTime), "out_time", outTime);
         return Result.success(recordService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 

@@ -15,7 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Slf4j
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class SmartParkingApplication {
 
     public static void main(String[] args) {
