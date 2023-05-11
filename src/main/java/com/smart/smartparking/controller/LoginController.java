@@ -1,6 +1,6 @@
 package com.smart.smartparking.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.smart.smartparking.common.Result;
 import com.smart.smartparking.common.JwtUtil;
 import com.smart.smartparking.common.annotation.AutoLog;
@@ -11,7 +11,6 @@ import com.smart.smartparking.service.UserService;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,8 +54,10 @@ public class LoginController {
     public Result register(@RequestBody User user) {
         String username = user.getUsername();
         User u = userService.findUserByUsername(username);
+        long timestamp = System.currentTimeMillis();
         if (u==null){
             user.setFlag("USER");
+            user.setUid(timestamp);
             userService.save(user);
             return Result.success();
         }else {
@@ -71,12 +72,6 @@ public class LoginController {
         return Result.success();
     }
 
-//    @ApiOperation(value = "用户退出登录接口")
-//    @GetMapping("/logout/{uid}")
-//    public Result logout(@PathVariable String uid){
-//        //userService.logout(uid);
-//        return Result.success();
-//    }
 
     @GetMapping("/checkToken")
     public Boolean checkToken(HttpServletRequest request){

@@ -235,12 +235,6 @@ public class RecordController {
         return Result.success(recordService.findRecordCount());
     }
 
-//    @ApiOperation(value = "", notes = "")
-//    @GetMapping("/getRecordCountByDay")
-//    public Result getRecordAllByDay( @RequestParam int day){
-//        String today = String.valueOf(LocalDate.now());
-//        int recordCounts = recordService.findRecordCountByDay(today,day);;
-//        return Result.success(recordCounts);
-//    }
+
 
 }

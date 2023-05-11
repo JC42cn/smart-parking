@@ -63,7 +63,7 @@ public class FileController {
         String fileFullName = uniFileFlag + StrUtil.DOT + extName;
         // 封装完整的文件路径获取方法
         String fileUploadPath = getFileUploadPath(fileFullName);
-        //  完整的上传文件名： D:\知识星球\partner-back/files/1231321321321321982321.jpg
+        //  完整的上传文件名
         long size = file.getSize();  // 单位是 byte, size / 1024 -> kb
 //        byte[] bytes = file.getBytes();
         String name = file.getName();
@@ -202,7 +202,7 @@ public class FileController {
 
     @AutoLog("新增文件记录")
     @PostMapping
-    //@SaCheckPermission("file.add")
+    //file.add
     public Result save(@RequestBody File file) {
         fileService.save(file);
         return Result.success();
@@ -210,7 +210,7 @@ public class FileController {
 
     @AutoLog("编辑文件记录")
     @PutMapping
-   // @SaCheckPermission("file.edit")
+   // file.edit
     public Result update(@RequestBody File file) {
         fileService.updateById(file);
         return Result.success();
@@ -218,7 +218,7 @@ public class FileController {
 
     @AutoLog("删除文件记录")
     @DeleteMapping("/{id}")
-    //@SaCheckPermission("file.delete")
+    //file.delete
     public Result delete(@PathVariable Integer id) {
         fileService.removeById(id);
         return Result.success();
@@ -226,26 +226,25 @@ public class FileController {
 
     @AutoLog("批量删除文件记录")
     @PostMapping("/del/batch")
-    //@SaCheckPermission("file.deleteBatch")
+    //file.deleteBatch
     public Result deleteBatch(@RequestBody List<Integer> ids) {
         fileService.removeByIds(ids);
         return Result.success();
     }
 
     @GetMapping
-    //@SaCheckPermission("file.list")
     public Result findAll() {
         return Result.success(fileService.list());
     }
 
     @GetMapping("/{id}")
-    //@SaCheckPermission("file.list")
+    //file.list
     public Result findOne(@PathVariable Integer id) {
         return Result.success(fileService.getById(id));
     }
 
     @GetMapping("/page")
-    //@SaCheckPermission("file.list")
+    //file.list
     public Result findPage(@RequestParam(defaultValue = "") String name,
                            @RequestParam Integer pageNum,
                            @RequestParam Integer pageSize) {
@@ -253,48 +252,5 @@ public class FileController {
         queryWrapper.like(!"".equals(name), "name", name);
         return Result.success(fileService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
-
-//    /**
-//    * 导出接口
-//    */
-//    @GetMapping("/export")
-//    @SaCheckPermission("file.export")
-//    public void export(HttpServletResponse response) throws Exception {
-//        // 从数据库查询出所有的数据
-//        List<File> list = fileService.list();
-//        // 在内存操作，写出到浏览器
-//        ExcelWriter writer = ExcelUtil.getWriter(true);
-//
-//        // 一次性写出list内的对象到excel，使用默认样式，强制输出标题
-//        writer.write(list, true);
-//
-//        // 设置浏览器响应的格式
-//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-//        String fileName = URLEncoder.encode("File信息表", "UTF-8");
-//        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xlsx");
-//
-//        ServletOutputStream out = response.getOutputStream();
-//        writer.flush(out, true);
-//        out.close();
-//        writer.close();
-//
-//    }
-//
-//    /**
-//    * excel 导入
-//    * @param file
-//    * @throws Exception
-//    */
-//    @PostMapping("/import")
-//    @SaCheckPermission("file.import")
-//    public Result imp(MultipartFile file) throws Exception {
-//        InputStream inputStream = file.getInputStream();
-//        ExcelReader reader = ExcelUtil.getReader(inputStream);
-//        // 通过 javabean的方式读取Excel内的对象，但是要求表头必须是英文，跟javabean的属性要对应起来
-//        List<File> list = reader.readAll(File.class);
-//
-//        fileService.saveBatch(list);
-//        return Result.success();
-//    }
 
 }

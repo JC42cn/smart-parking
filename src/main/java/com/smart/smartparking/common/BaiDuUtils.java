@@ -56,8 +56,9 @@ public class BaiDuUtils {
              * 是否检测多张车牌，默认为false
              * 当置为true的时候可以对一张图片内的多张车牌进行识别
              */
-            options.put("detect_direction", "true");
-            options.put("detect_language", "true");
+            options.put("detect_direction", "true");//是否检测图片朝向，并自动进行校正
+            options.put("detect_language", "true");//检测识别出来的文字所属的语言类型的
+
             SslUtils.ignoreSsl();
             JSONObject res = client.basicAccurateGeneral(image, options);
             Object result = res.get("words_result");

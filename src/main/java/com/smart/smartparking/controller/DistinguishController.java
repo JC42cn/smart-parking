@@ -61,12 +61,10 @@ public class DistinguishController {
     @Resource
     private IParkingSpaceService parkingSpaceService;
 
-//    @Resource
-//    private IOrderService orderService;
     @PostMapping("upload")
     @ApiOperation(value = "扫描车牌", notes = "扫描车牌")
     @AutoLog("文字识别")
-    //@SaCheckPermission("distinguish.upload")
+    //distinguish.upload
     public Result upload(MultipartFile file,String name,String username){//传入停车场名和图片
         try {
 
@@ -270,7 +268,7 @@ public class DistinguishController {
     @PostMapping("uploadcar")
     @ApiOperation(value = "扫描车牌", notes = "扫描车牌")
     @AutoLog("文字识别")
-    //@SaCheckPermission("distinguish.uploadcar")
+    //distinguish.uploadcar
     public Result uploadCarNumber(MultipartFile file){
         try {
             //文件处理

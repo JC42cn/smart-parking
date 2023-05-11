@@ -7,7 +7,6 @@ import com.smart.smartparking.entity.Bookings;
 import com.smart.smartparking.entity.Parking;
 import com.smart.smartparking.entity.ParkingSpace;
 import com.smart.smartparking.mapper.BookingsMapper;
-import com.smart.smartparking.mapper.ParkingMapper;
 import com.smart.smartparking.mapper.ParkingSpaceMapper;
 import com.smart.smartparking.service.BookingsService;
 import com.smart.smartparking.service.IParkingService;
@@ -16,12 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -215,21 +211,11 @@ public class BookingsController {
             Parking parking = parkingService.selectParkingByPid(pid);
             String name = parking.getName();
             queryWrapper.eq("pid",pid).eq("uid",uid);
+        }else{
+            queryWrapper.eq("uid",uid);
         }
         return Result.success(bookingsService.page(new Page<>(pageNum, pageSize), queryWrapper));
     }
 
-
-//    @GetMapping("/userpake")
-//
-//    public Result userpake(@RequestParam String name,
-//                                  @RequestParam Integer pageNum,
-//                                  @RequestParam Integer pageSize,
-//                                  @RequestParam long uid) {
-//
-//        QueryWrapper<Bookings> queryWrapper = new QueryWrapper<Bookings>().orderByDesc("id");
-//        queryWrapper.like(!"".equals(name), "entry_time", name).eq("uid",uid);
-//        return Result.success(bookingsService.page(new Page<>(pageNum, pageSize), queryWrapper));
-//    }
 
 }

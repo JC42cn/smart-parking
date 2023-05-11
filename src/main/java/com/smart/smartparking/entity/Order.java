@@ -87,6 +87,6 @@ private static final long serialVersionUID = 1L;
     // 逻辑删除 0存在  id删除
     @ApiModelProperty("逻辑删除 0存在  id删除")
     @Alias("逻辑删除 0存在  id删除")
-    @TableLogic(value = "0", delval = "id")
+    @TableLogic(value = "0", delval = "1")
     private Integer deleted;
 }
