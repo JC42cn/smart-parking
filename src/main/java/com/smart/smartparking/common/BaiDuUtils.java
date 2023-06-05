@@ -38,7 +38,7 @@ public class BaiDuUtils {
     @PostConstruct
     public void init() {
         try {
-            client = new AipOcr("31714713", "OwknN4y0b2l2Hqdx5HGE4VmT", "DURsb6aRG9T1RO0VqkNGD5iuLyVx1x0r");
+            client = new AipOcr("", "", "");
             client.setConnectionTimeoutInMillis(2000);
             client.setSocketTimeoutInMillis(60000);
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class BaiDuUtils {
 
     public static void main(String[] args)  {
         try {
-            AipOcr client = new AipOcr("31714713", "OwknN4y0b2l2Hqdx5HGE4VmT", "DURsb6aRG9T1RO0VqkNGD5iuLyVx1x0r");
+            AipOcr client = new AipOcr("", "", "");
           //  AipOcr  client = new AipOcr("31047334", "D3sAulGIClgEujiKZfbBHWUl", "GmL3dyh2BPa8wD8kYxaomYkufmzkCCqo");
 
             //设置网络连接参数
