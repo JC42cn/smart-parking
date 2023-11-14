@@ -38,7 +38,7 @@ public class BaiDuUtils {
     @PostConstruct
     public void init() {
         try {
-            client = new AipOcr("", "", "");
+            client = new AipOcr("XXXXX", "XXXXX", "XXXXX");
             client.setConnectionTimeoutInMillis(2000);
             client.setSocketTimeoutInMillis(60000);
         } catch (Exception e) {
